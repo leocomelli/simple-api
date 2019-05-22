@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/sirupsen/logrus"
@@ -25,7 +26,13 @@ func main() {
 
 	output := os.Stdout
 	if len(os.Args) >= 3 {
-		var err error
+		dir := filepath.Dir(os.Args[2])
+
+		err := os.MkdirAll(dir, os.ModePerm)
+		if err != nil {
+			logrus.Fatal(err)
+		}
+
 		output, err = os.OpenFile(os.Args[2], os.O_WRONLY|os.O_CREATE, 0755)
 		if err != nil {
 			logrus.Fatal(err)
