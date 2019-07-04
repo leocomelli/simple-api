@@ -60,7 +60,7 @@ func main() {
 			"version":     version,
 		}).Info("a new request has been received")
 
-		w.Write([]byte(fmt.Sprintf("hello world in %s", path)))
+		w.Write([]byte(fmt.Sprintf("path: %s, method: %s, remote addr: %s, version: %s", path, r.Method, r.RemoteAddr, version)))
 	})
 
 	log.Fatal(http.ListenAndServe(port, nil))
