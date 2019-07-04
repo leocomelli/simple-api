@@ -11,6 +11,11 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+var (
+	version = "n/a"
+	port    = ":8081"
+)
+
 func main() {
 
 	logrus.SetFormatter(&logrus.JSONFormatter{})
@@ -41,12 +46,22 @@ func main() {
 
 	logrus.SetOutput(output)
 
-	logrus.WithField("path", path).Info("starting simple-api...")
+	logrus.WithFields(logrus.Fields{
+		"path": path,
+		"port": port,
+	}).Info("starting simple-api...")
 
 	http.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
-		logrus.Infof("hello world in %s", path)
+
+		logrus.WithFields(logrus.Fields{
+			"path":        path,
+			"method":      r.Method,
+			"remote addr": r.RemoteAddr,
+			"version":     version,
+		}).Info("a new request has been received")
+
 		w.Write([]byte(fmt.Sprintf("hello world in %s", path)))
 	})
 
-	log.Fatal(http.ListenAndServe(":8081", nil))
+	log.Fatal(http.ListenAndServe(port, nil))
 }
